@@ -1,0 +1,28 @@
+name: Verify test-runner-core
+
+on:
+  pull_request:
+    paths:
+      - 'packages/test-runner-core/**'
+
+jobs:
+  verify:
+    name: Verify changes
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+      - name: Build
+        working-directory: ./packages/test-runner-core/
+        run: yarn build
+      - name: Test
+        working-directory: ./packages/test-runner-core/
+        run: yarn test
